@@ -1,40 +1,40 @@
-from flask import Flask, render_template, request, redirect, url_for
-import openpyxl
-import os
+from flask import Flask, render_template, redirect, url_for, request
 from datetime import datetime
+import openpyxl
 
 app = Flask(__name__)
 
-# Get the current date in the format YYYY-MM-DD
-current_date = datetime.now().strftime('%Y-%m-%d')
-
-# Path where the Excel file will be saved with current date in the filename
-EXCEL_FILE_PATH = os.path.join(os.getcwd(), 'data', f'counter_data_{current_date}.xlsx')
-
-# Initialize count (it could also be stored in a session if you prefer)
+# Global counter
 counter = 0
+# Excel file path
+EXCEL_FILE_PATH = "data/counter_data.xlsx"
 
-# Ensure the directory exists
-if not os.path.exists(os.path.dirname(EXCEL_FILE_PATH)):
-    os.makedirs(os.path.dirname(EXCEL_FILE_PATH))
+# Create an Excel file if it doesn't exist
+def create_excel_file():
+    try:
+        workbook = openpyxl.load_workbook(EXCEL_FILE_PATH)
+    except FileNotFoundError:
+        # If the file doesn't exist, create it
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        sheet.title = "Counter Data"
+        sheet.append(["Timestamp", "Counter Value"])  # Header row
+        workbook.save(EXCEL_FILE_PATH)
 
-# Helper function to write count to Excel
-def write_to_excel(count):
-    # Check if the Excel file already exists
-    if os.path.exists(EXCEL_FILE_PATH):
-        wb = openpyxl.load_workbook(EXCEL_FILE_PATH)
-    else:
-        wb = openpyxl.Workbook()
+# Function to append timestamp and counter value to the Excel file
+def write_to_excel(counter_value):
+    create_excel_file()  # Ensure the Excel file exists
+    workbook = openpyxl.load_workbook(EXCEL_FILE_PATH)
+    sheet = workbook.active
     
-    sheet = wb.active
-    # Add headers if the file is empty
-    if sheet.max_row == 1 and sheet.max_column == 1:
-        sheet.append(['Timestamp', 'Count'])
+    # Get the current timestamp
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # Write the current count with a timestamp
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    sheet.append([timestamp, count])
-    wb.save(EXCEL_FILE_PATH)
+    # Append the timestamp and counter value to a new row
+    sheet.append([timestamp, counter_value])
+    
+    # Save the workbook
+    workbook.save(EXCEL_FILE_PATH)
 
 @app.route('/')
 def index():
@@ -55,7 +55,7 @@ def decrease():
 @app.route('/submit', methods=['POST'])
 def submit():
     global counter
-    write_to_excel(counter)  # Save the current count to Excel
+    write_to_excel(counter)  # Write current counter and timestamp to Excel
     return redirect(url_for('index'))
 
 @app.route('/end_session', methods=['POST'])
