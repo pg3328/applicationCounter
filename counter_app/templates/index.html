@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter Application</title>
+    <style>
+        /* Basic reset to remove default margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+
+        /* Header styles */
+        h1 {
+            font-size: 3em;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
+
+        /* Button container */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect on buttons */
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Layout for buttons */
+        form {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        /* Submit and End Session buttons */
+        form button {
+            background-color: #2196F3;
+        }
+
+        form button:hover {
+            background-color: #1976D2;
+        }
+
+        /* Styling for the page */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Counter: {{ counter }}</h1>
+
+        <!-- Buttons to increase/decrease counter -->
+        <form action="/increase" method="POST">
+            <button type="submit">Increase</button>
+        </form>
+        
+        <form action="/decrease" method="POST">
+            <button type="submit">Decrease</button>
+        </form>
+
+        <!-- Submit the current count to an Excel file -->
+        <form action="/submit" method="POST">
+            <button type="submit">Submit to Excel</button>
+        </form>
+
+        <!-- End the session and reset the counter -->
+        <!-- <form action="/end_session" method="POST">
+            <button type="submit">End Session</button>
+        </form> -->
+    </div>
+
+    <footer>
+        <p>Counter App &copy; 2024</p>
+    </footer>
+</body>
+</html>
